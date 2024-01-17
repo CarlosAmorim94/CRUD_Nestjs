@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { CreateUserDTO } from './dto/createUser.dto';
+import { ListUsersDTO } from './dto/listUsers.dto';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 
@@ -15,12 +16,16 @@ export class UserController {
     userEntity.password = userData.password;
     userEntity.id = randomUUID();
 
-    this.userRepository.save(userEntity);
+    await this.userRepository.save(userEntity);
     return { message: 'Usuário criado com sucesso' };
   }
 
   @Get()
   async getUser() {
-    return this.userRepository.findAll();
+    const savedUsers = await this.userRepository.findAll();
+    const listUsers = savedUsers.map(
+      (user) => new ListUsersDTO(user.id, user.name),
+    );
+    return listUsers;
   }
 }
