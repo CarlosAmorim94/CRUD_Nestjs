@@ -1,14 +1,14 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { EmaiUnico } from '../validacao/emailUnico.validator';
+import { UniqueEmail } from '../validations/uniqueEmail.validator';
 
-export class CriaUsuarioDTO {
+export class CreateUserDTO {
   @IsNotEmpty({ message: 'Nome obrigatório' })
-  nome: string;
+  name: string;
 
   @IsEmail({}, { message: 'E-mail inválido' })
-  @EmaiUnico({ message: 'E-mail já cadastrado' })
+  @UniqueEmail({ message: 'E-mail já cadastrado' })
   email: string;
 
   @MinLength(6, { message: 'Senha deve ter no mínimo 6 caracteres' })
-  senha: string;
+  password: string;
 }
