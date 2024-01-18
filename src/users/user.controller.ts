@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { ListUsersDTO } from './dto/listUsers.dto';
+import { UpdateUserDTO } from './dto/updateUser.dto';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 
@@ -27,5 +36,23 @@ export class UserController {
       (user) => new ListUsersDTO(user.id, user.name),
     );
     return listUsers;
+  }
+
+  @Put('/:id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() userDataUpdate: UpdateUserDTO,
+  ) {
+    const updatedUser = await this.userRepository.update(id, userDataUpdate);
+    return { user: updatedUser, message: 'Usuário atualizado com sucesso' };
+  }
+
+  @Delete('/:id')
+  async deleteUser(@Param('id') id: string) {
+    const deletedUser = await this.userRepository.delete(id);
+    return {
+      user: deletedUser,
+      message: 'Usuário deletado com sucesso',
+    };
   }
 }
